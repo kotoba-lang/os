@@ -1,4 +1,4 @@
-(ns os.terminal
+(ns window-session-state.terminal
   "Embedded XRPC terminal — command-history buffer + scrollback. Restored
   from the legacy kami-engine/kami-os `terminal.rs` (deleted in
   kotoba-lang/kami-engine PR #82 'Remove Rust workspace from

@@ -1,4 +1,4 @@
-(ns os.taskbar
+(ns window-session-state.taskbar
   "Taskbar state — agent status list, budget display, consent badge,
   launcher toggle. Restored from the legacy kami-engine/kami-os
   `taskbar.rs` (deleted in kotoba-lang/kami-engine PR #82 'Remove Rust

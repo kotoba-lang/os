@@ -1,5 +1,5 @@
-(ns os-test
-  "Test suite for the restored `os` (kami-os) namespaces.
+(ns window-session-state-test
+  "Test suite for the restored `window-session-state` (kami-os) namespaces.
 
   The original Rust crate (kami-engine/kami-os, deleted in
   kotoba-lang/kami-engine PR #82) had zero `#[test]` functions in any of
@@ -9,21 +9,21 @@
   ported pure function across all modules, plus the pre-existing
   namespace-loads smoke test."
   (:require [clojure.test :refer [deftest is testing]]
-            [os]
-            [os.window :as window]
-            [os.compositor :as compositor]
-            [os.input-router :as input-router]
-            [os.taskbar :as taskbar]
-            [os.launcher :as launcher]
-            [os.notification :as notification]
-            [os.terminal :as terminal]
-            [os.file-explorer :as file-explorer]))
+            [window-session-state]
+            [window-session-state.window :as window]
+            [window-session-state.compositor :as compositor]
+            [window-session-state.input-router :as input-router]
+            [window-session-state.taskbar :as taskbar]
+            [window-session-state.launcher :as launcher]
+            [window-session-state.notification :as notification]
+            [window-session-state.terminal :as terminal]
+            [window-session-state.file-explorer :as file-explorer]))
 
 (deftest namespace-loads
   (testing "the restored CLJC namespace loads"
-    (is (some? (the-ns 'os)))))
+    (is (some? (the-ns 'window-session-state)))))
 
-;; ── os.window ────────────────────────────────────
+;; ── window-session-state.window ────────────────────────────────────
 
 (deftest window-component-from-config-test
   (let [cfg (window/window-config {:app-id "app1" :title "Files" :x 10 :y 20 :w 300 :h 200
@@ -50,7 +50,7 @@
     (is (not (window/title-bar-contains? rect 50 33.0)))
     (is (not (window/title-bar-contains? rect 101 10)))))
 
-;; ── os.compositor ────────────────────────────────
+;; ── window-session-state.compositor ────────────────────────────────
 
 (deftest compositor-bring-to-front-test
   (let [c (compositor/compositor-state)
@@ -97,7 +97,7 @@
   (is (= (- compositor/default-desktop-height compositor/default-taskbar-height)
          (compositor/usable-height (compositor/compositor-state)))))
 
-;; ── os.input-router ──────────────────────────────
+;; ── window-session-state.input-router ──────────────────────────────
 
 (deftest input-router-resolve-target-test
   (let [ir (input-router/input-router-state)]
@@ -117,7 +117,7 @@
     (is (nil? (:focused (input-router/clear-focus-if ir 1))))
     (is (= 1 (:focused (input-router/clear-focus-if ir 2))))))
 
-;; ── os.taskbar ───────────────────────────────────
+;; ── window-session-state.taskbar ───────────────────────────────────
 
 (deftest taskbar-state-test
   (let [t (taskbar/taskbar-state)
@@ -133,7 +133,7 @@
       (is (:launcher-open t))
       (is (not (:launcher-open (taskbar/toggle-launcher t)))))))
 
-;; ── os.launcher ──────────────────────────────────
+;; ── window-session-state.launcher ──────────────────────────────────
 
 (defn- app [name] (launcher/launcher-app {:app-id name :name name :icon "x"
                                            :description (str name " app") :domain (str name ".com")
@@ -165,7 +165,7 @@
       (let [l (-> l launcher/select-next launcher/select-next)]
         (is (= 2 (:selected-index l)))))))
 
-;; ── os.notification ──────────────────────────────
+;; ── window-session-state.notification ──────────────────────────────
 
 (deftest notification-toast-tick-test
   (let [q (notification/notification-queue)
@@ -188,7 +188,7 @@
       (is (nil? (notification/active-consent q)))
       (is (= [[id :approved]] (:consent-responses q))))))
 
-;; ── os.terminal ──────────────────────────────────
+;; ── window-session-state.terminal ──────────────────────────────────
 
 (deftest terminal-submit-test
   (let [t (assoc (terminal/terminal-state) :input "help")
@@ -229,7 +229,7 @@
     (is (= 3 (count (:output t))))
     (is (= ["c" "d" "e"] (mapv :text (:output t))))))
 
-;; ── os.file-explorer ─────────────────────────────
+;; ── window-session-state.file-explorer ─────────────────────────────
 
 (deftest file-explorer-navigate-test
   (let [fe (file-explorer/file-explorer-state)
@@ -259,40 +259,40 @@
     (let [fe (file-explorer/toggle-select fe 0)]
       (is (= [] (:selected fe))))))
 
-;; ── os (top-level desktop orchestration) ─────────
+;; ── window-session-state (top-level desktop orchestration) ─────────
 
-(deftest os-open-close-focus-window-test
-  (let [d (os/os-desktop)
+(deftest window-session-state-open-close-focus-window-test
+  (let [d (window-session-state/window-session-state-desktop)
         cfg (window/window-config {:app-id "app1" :title "T" :x 0 :y 0 :w 10 :h 10
                                     :content window/terminal-content})
-        [d id] (os/open-window d cfg)]
+        [d id] (window-session-state/open-window d cfg)]
     (is (contains? (:windows d) id))
     (is (= id (compositor/focused-window (:compositor d))))
     (is (= id (input-router/focused (:input-router d))))
-    (let [[d2 id2] (os/open-window d cfg)]
+    (let [[d2 id2] (window-session-state/open-window d cfg)]
       (is (= [id2 id] (compositor/z-stack (:compositor d2))))
-      (let [d3 (os/focus-window d2 id)]
+      (let [d3 (window-session-state/focus-window d2 id)]
         (is (= [id id2] (compositor/z-stack (:compositor d3))))))
-    (let [d (os/close-window d id)]
+    (let [d (window-session-state/close-window d id)]
       (is (not (contains? (:windows d) id)))
       (is (nil? (compositor/focused-window (:compositor d)))))))
 
-(deftest os-notification-helpers-test
-  (let [d (os/os-desktop)
-        d (os/show-notification d "Hi" "body" :info)]
+(deftest window-session-state-notification-helpers-test
+  (let [d (window-session-state/window-session-state-desktop)
+        d (window-session-state/show-notification d "Hi" "body" :info)]
     (is (= 1 (count (:toasts (:toasts (:notifications d))))))
     (let [req (notification/consent-request {:agent-did "did:1" :agent-name "a"
                                               :action "write" :risk-tier "low"
                                               :estimated-cost 0.0 :context-json "{}"})
-          [d id] (os/show-consent-modal d req)]
+          [d id] (window-session-state/show-consent-modal d req)]
       (is (= 1 id))
       (is (= id (:id (notification/active-consent (:notifications d))))))))
 
-(deftest os-advance-test
-  (let [d (os/os-desktop)
-        [d ticks] (os/advance d os/default-tick-ns)]
+(deftest window-session-state-advance-test
+  (let [d (window-session-state/window-session-state-desktop)
+        [d ticks] (window-session-state/advance d window-session-state/default-tick-ns)]
     (is (= 1 ticks))
     (is (= 1 (:ticks (:clock d))))
-    (let [[d ticks] (os/advance d 0)]
+    (let [[d ticks] (window-session-state/advance d 0)]
       (is (= 0 ticks))
       (is (= 1 (:ticks (:clock d)))))))

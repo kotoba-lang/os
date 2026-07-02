@@ -1,4 +1,4 @@
-(ns os
+(ns window-session-state
   "KAMI OS desktop — top-level ECS-world orchestration tying together
   window management, the compositor, input routing, taskbar, launcher,
   and notifications. Restored from the legacy kami-engine/kami-os
@@ -14,17 +14,17 @@
     here as plain integer window IDs used as map keys in a `:windows`
     map on the desktop (same entity-as-plain-ID adaptation used
     successfully in `kotoba-lang/scene-graph` and `kotoba-lang/core`).
-  - **Compositor**: z-ordered window state — ported in `os.compositor`.
+  - **Compositor**: z-ordered window state — ported in `window-session-state.compositor`.
     Actual wgpu draw calls are GPU rendering and out of scope.
   - **Input router**: focus-aware dispatch state — ported in
-    `os.input-router` (mirrors the `[:panel id]`/`[:modal id]`/
+    `window-session-state.input-router` (mirrors the `[:panel id]`/`[:modal id]`/
     `[:global-overlay]`/`[:none]` resolution pattern already
     established in the sibling `kotoba-lang/input` restoration).
   - **Bridge**: `kami-bridge` (native OS input capture) and `kami-knp`
     (device mesh) are native-substrate dependencies with no portable
     CLJC equivalent — entirely out of scope. Callers on the native
     substrate are expected to translate native input into the abstract
-    events this namespace and `os.input-router` consume.
+    events this namespace and `window-session-state.input-router` consume.
 
   The original's `GameClock` (fixed 30fps compositor tick) is
   reimplemented locally in `advance` as a simple portable accumulator,
@@ -33,18 +33,18 @@
   semantics without pulling in unrelated native timing code.
 
   Zero-dep portable CLJC — pure data + pure functions, no IO/GPU."
-  (:require [os.compositor :as compositor]
-            [os.input-router :as input-router]
-            [os.taskbar :as taskbar]
-            [os.launcher :as launcher]
-            [os.notification :as notification]
-            [os.window :as window]))
+  (:require [window-session-state.compositor :as compositor]
+            [window-session-state.input-router :as input-router]
+            [window-session-state.taskbar :as taskbar]
+            [window-session-state.launcher :as launcher]
+            [window-session-state.notification :as notification]
+            [window-session-state.window :as window]))
 
 (def default-tick-ns
   "Fixed-timestep interval for a 30fps compositor tick, in nanoseconds."
   (long (/ 1000000000 30)))
 
-(defn os-desktop
+(defn window-session-state-desktop
   "Create a new OS desktop with default 30fps compositor clock, no open
   windows, and fresh compositor/input-router/taskbar/launcher/
   notification sub-states."
@@ -59,7 +59,7 @@
    :notifications (notification/notification-queue)})
 
 (defn open-window
-  "Open a new window from `config` (an `os.window/window-config` map).
+  "Open a new window from `config` (an `window-session-state.window/window-config` map).
   Returns `[desktop' window-id]`."
   [desktop config]
   (let [id (:next-window-id desktop)

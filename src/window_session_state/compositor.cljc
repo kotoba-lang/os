@@ -1,4 +1,4 @@
-(ns os.compositor
+(ns window-session-state.compositor
   "Window compositor state — z-order, focus, and drag tracking. Restored
   from the legacy kami-engine/kami-os `compositor.rs` (deleted in
   kotoba-lang/kami-engine PR #82 'Remove Rust workspace from

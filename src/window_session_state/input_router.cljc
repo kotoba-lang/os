@@ -1,4 +1,4 @@
-(ns os.input-router
+(ns window-session-state.input-router
   "Focus-aware input routing. Restored from the legacy kami-engine/kami-os
   `input_router.rs` (deleted in kotoba-lang/kami-engine PR #82 'Remove
   Rust workspace from kami-engine') as part of the clj-wgsl migration

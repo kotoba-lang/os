@@ -1,4 +1,4 @@
-(ns os.launcher
+(ns window-session-state.launcher
   "App launcher overlay — grid of installed apps. Restored from the
   legacy kami-engine/kami-os `launcher.rs` (deleted in
   kotoba-lang/kami-engine PR #82 'Remove Rust workspace from

@@ -1,4 +1,4 @@
-(ns os.window
+(ns window-session-state.window
   "Window ECS component + management. Restored from the legacy
   kami-engine/kami-os `window.rs` (deleted in kotoba-lang/kami-engine
   PR #82 'Remove Rust workspace from kami-engine') as part of the

@@ -1,4 +1,4 @@
-(ns os.notification
+(ns window-session-state.notification
   "Notification queue — toast stack + consent-modal queue. Restored from
   the legacy kami-engine/kami-os `notification.rs` (deleted in
   kotoba-lang/kami-engine PR #82 'Remove Rust workspace from

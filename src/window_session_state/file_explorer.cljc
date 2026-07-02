@@ -1,4 +1,4 @@
-(ns os.file-explorer
+(ns window-session-state.file-explorer
   "File explorer — directory-listing view state for an R2/IPFS-backed
   file browser. Restored from the legacy kami-engine/kami-os
   `file_explorer.rs` (deleted in kotoba-lang/kami-engine PR #82 'Remove
@@ -6,7 +6,7 @@
   (ADR-2607010930, com-junkawasaki/root).
 
   The original fetched directory entries via Magatama XRPC commands
-  (`app.etzhayyim.os.sync.*`) against R2/IPFS storage; that network IO
+  (`app.etzhayyim.window-session-state.sync.*`) against R2/IPFS storage; that network IO
   is out of scope here — this namespace owns only the portable view
   state: current path, navigation (into/up), multi-select, sort order,
   and view mode. Callers are expected to populate `:entries` from their
