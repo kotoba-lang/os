@@ -21,7 +21,7 @@
 
 (deftest namespace-loads
   (testing "the restored CLJC namespace loads"
-    (is (some? (the-ns 'window-session-state)))))
+    (is (some? (find-ns 'window-session-state)))))
 
 ;; ── window-session-state.window ────────────────────────────────────
 
