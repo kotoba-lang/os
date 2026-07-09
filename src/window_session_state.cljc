@@ -73,12 +73,20 @@
      id]))
 
 (defn close-window
-  "Close a window by ID."
+  "Close a window by ID. If the closed window held input focus, the input
+  router is re-synced to whichever window the compositor falls focus
+  through to (the new front-most window, or nil) rather than merely
+  clearing focus -- keeping compositor and input-router focus in
+  agreement, same as open-window/focus-window always setting both
+  together."
   [desktop window-id]
-  (-> desktop
-      (update :windows dissoc window-id)
-      (update :compositor compositor/remove-window window-id)
-      (update :input-router input-router/clear-focus-if window-id)))
+  (let [desktop (-> desktop
+                     (update :windows dissoc window-id)
+                     (update :compositor compositor/remove-window window-id))]
+    (if (= window-id (input-router/focused (:input-router desktop)))
+      (update desktop :input-router input-router/set-focus
+              (compositor/focused-window (:compositor desktop)))
+      desktop)))
 
 (defn focus-window
   "Focus a window by ID (bring to front + set input focus)."

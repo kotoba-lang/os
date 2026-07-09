@@ -277,6 +277,33 @@
       (is (not (contains? (:windows d) id)))
       (is (nil? (compositor/focused-window (:compositor d)))))))
 
+(deftest window-session-state-close-focused-window-syncs-input-router-test
+  ;; Closing the focused/front window with another window still open must
+  ;; re-sync input-router focus to the new front window the compositor
+  ;; falls through to -- not merely clear it to nil. The single-window
+  ;; close case in the test above can't catch this: both compositor and
+  ;; input-router coincidentally end up nil there either way.
+  (let [d0 (window-session-state/window-session-state-desktop)
+        cfg (window/window-config {:app-id "app1" :title "T" :x 0 :y 0 :w 10 :h 10
+                                    :content window/terminal-content})
+        [d1 id1] (window-session-state/open-window d0 cfg)
+        [d2 id2] (window-session-state/open-window d1 cfg)  ; id2 is now front/focused
+        d3 (window-session-state/close-window d2 id2)]
+    (is (= id1 (compositor/focused-window (:compositor d3))))
+    (is (= id1 (input-router/focused (:input-router d3)))
+        "input-router must agree with the compositor's fallthrough focus")
+    (is (= [:panel id1] (input-router/resolve-target (:input-router d3))))))
+
+(deftest window-session-state-close-background-window-leaves-focus-test
+  (let [d0 (window-session-state/window-session-state-desktop)
+        cfg (window/window-config {:app-id "app1" :title "T" :x 0 :y 0 :w 10 :h 10
+                                    :content window/terminal-content})
+        [d1 id1] (window-session-state/open-window d0 cfg)
+        [d2 id2] (window-session-state/open-window d1 cfg)  ; id2 focused
+        d3 (window-session-state/close-window d2 id1)]      ; close the OTHER window
+    (is (= id2 (compositor/focused-window (:compositor d3))))
+    (is (= id2 (input-router/focused (:input-router d3))))))
+
 (deftest window-session-state-notification-helpers-test
   (let [d (window-session-state/window-session-state-desktop)
         d (window-session-state/show-notification d "Hi" "body" :info)]
