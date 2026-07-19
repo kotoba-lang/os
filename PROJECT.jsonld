@@ -1,0 +1,405 @@
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "@id": "https://os.etzhayyim.com",
+  "name": "etzhayyim-project-os",
+  "description": "Etzhayyim OS - Web4 Local Interface. Desktop operating environment that serves as the human's gateway to the agent-populated internet. Manages local AI agents (WASM sandbox), provides human-in-the-loop governance, economic budget enforcement via GCC tokens, and local-cloud state synchronization.",
+  "url": "https://os.etzhayyim.com",
+  "applicationCategory": "DesktopApplication",
+  "operatingSystem": "macOS, Linux, Windows",
+  "author": {
+    "@type": "Organization",
+    "name": "etzhayyim",
+    "url": "https://etzhayyim.com"
+  },
+  "component": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "os-runtime-component",
+      "description": "Core OS runtime. Exports 6 OS interfaces (agent-runtime, consent, directory, budget, audit, sync) via wRPC. World: etzhayyim-os-runtime.",
+      "applicationCategory": "Runtime",
+      "programmingLanguage": "Go",
+      "runtimePlatform": "SpinApp (TinyGo WebAssembly)",
+      "path": "wasm/os-runtime-component"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "name": "os-ai-component",
+      "description": "AI chat/completion via WebLLM (WebGPU) + OpenRouter fallback. World: etzhayyim-os-ai.",
+      "applicationCategory": "AI",
+      "programmingLanguage": "Go",
+      "runtimePlatform": "SpinApp (TinyGo WebAssembly)",
+      "path": "wasm/os-ai-component"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "name": "os-messaging-component",
+      "description": "Unified messaging (iMessage native bridge + WhatsApp + Gmail cloud). World: etzhayyim-os-messaging.",
+      "applicationCategory": "Messaging",
+      "programmingLanguage": "Go",
+      "runtimePlatform": "SpinApp (TinyGo WebAssembly)",
+      "path": "wasm/os-messaging-component"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "name": "os-scheduler-component",
+      "description": "Thread aggregation + AI-driven smart scheduling. World: etzhayyim-os-scheduler.",
+      "applicationCategory": "Scheduling",
+      "programmingLanguage": "Go",
+      "runtimePlatform": "SpinApp (TinyGo WebAssembly)",
+      "path": "wasm/os-scheduler-component"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "name": "os-system-component",
+      "description": "AV scan, privacy management, system optimization. World: etzhayyim-os-system.",
+      "applicationCategory": "Security",
+      "programmingLanguage": "Go",
+      "runtimePlatform": "SpinApp (TinyGo WebAssembly)",
+      "path": "wasm/os-system-component"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "name": "os-wellbeing-component",
+      "description": "Becoming journey, wellness dimensions tracking. World: etzhayyim-os-wellbeing.",
+      "applicationCategory": "Wellbeing",
+      "programmingLanguage": "Go",
+      "runtimePlatform": "SpinApp (TinyGo WebAssembly)",
+      "path": "wasm/os-wellbeing-component"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "name": "os-ui",
+      "description": "Web4 OS dedicated Svelte UI (dashboard, agents, consent, directory, budget, audit, sync, chat, messaging, scheduler, system, settings)",
+      "applicationCategory": "Frontend",
+      "programmingLanguage": "TypeScript",
+      "runtimePlatform": "SvelteKit 2 (Static)",
+      "path": "wasm/os-ui-6s80i2ya"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "name": "sys-os",
+      "description": "Tauri desktop shell (OAuth PKCE + auto-update). Serves local Svelte UI. No App runtime dependency.",
+      "applicationCategory": "Desktop",
+      "programmingLanguage": "Rust",
+      "runtimePlatform": "Tauri v2 (Desktop)",
+      "path": "legacy-runtime/sys-os-jt4qfzv1"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "name": "drive-sync-component",
+      "description": "Local-cloud file synchronization. World: etzhayyim-os-consumer.",
+      "applicationCategory": "Storage",
+      "programmingLanguage": "Go",
+      "runtimePlatform": "SpinApp (TinyGo WebAssembly)",
+      "path": "wasm/drive-sync-component"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "name": "os-mcp-component",
+      "description": "System info MCP endpoint for OS monitoring. World: etzhayyim-mcp.",
+      "applicationCategory": "Monitoring",
+      "programmingLanguage": "Go",
+      "runtimePlatform": "SpinApp (TinyGo WebAssembly)",
+      "path": "wasm/os-mcp-component"
+    }
+  ],
+  "tasks": [
+    {
+      "status": "completed",
+      "task": "Create os.etzhayyim.com download portal with SvelteKit"
+    },
+    {
+      "status": "completed",
+      "task": "Configure Tier 3 static deployment via legacy runtimeApp CRD"
+    },
+    {
+      "status": "completed",
+      "task": "Separate scheduler service into etzhayyim-project-scheduler"
+    },
+    {
+      "status": "completed",
+      "task": "Restructure into apps/ convention (os-ui-6s80i2ya, sys-os-jt4qfzv1)"
+    },
+    {
+      "status": "completed",
+      "task": "Add DNS record for os.etzhayyim.com"
+    },
+    {
+      "status": "completed",
+      "task": "Setup Tauri auto-update via GitHub Releases"
+    },
+    {
+      "status": "completed",
+      "task": "Integrate error reporting to GitHub issues via legacy runtime"
+    },
+    {
+      "status": "completed",
+      "task": "Move etzhayyim-distill to etzhayyim-project-distill"
+    },
+    {
+      "status": "design_complete",
+      "task": "Design etzhayyim:os@0.1.0 WIT interfaces (agent-runtime, consent, directory, budget, audit, sync)"
+    },
+    {
+      "status": "design_complete",
+      "task": "Design etzhayyim-os-runtime and etzhayyim-os-consumer worlds"
+    },
+    {
+      "status": "design_complete",
+      "task": "Design Web4 OS architecture (6-layer mapping, consent flow, budget enforcement)"
+    },
+    {
+      "status": "design_complete",
+      "task": "Design drive-sync-component WIT and WADM manifest for local-cloud file sync"
+    },
+    {
+      "status": "in_progress",
+      "task": "Build and push Tauri binaries for macOS, Linux, Windows"
+    },
+    {
+      "status": "pending",
+      "task": "Implement os-runtime-component (TinyGo SpinApp, etzhayyim-os-runtime world)"
+    },
+    {
+      "status": "pending",
+      "task": "Implement consent UI in Tauri Svelte frontend (approval queue, delegation management)"
+    },
+    {
+      "status": "pending",
+      "task": "Implement agent dashboard in Tauri Svelte frontend (spawn, metrics, lifecycle)"
+    },
+    {
+      "status": "pending",
+      "task": "Implement budget enforcement with GCC wallet integration"
+    },
+    {
+      "status": "pending",
+      "task": "Implement local-cloud agent migration via sql graph gRPC message stream"
+    },
+    {
+      "status": "pending",
+      "task": "Implement agent directory with cross-actor cross-network discovery"
+    },
+    {
+      "status": "pending",
+      "task": "Implement audit trail with gitstate integration"
+    },
+    {
+      "status": "pending",
+      "task": "Implement offline-first sync with conflict resolution"
+    },
+    {
+      "status": "pending",
+      "task": "Generate Tauri signing keys and configure GitHub secrets"
+    },
+    {
+      "status": "pending",
+      "task": "Implement SpinApp drive-sync-component (TinyGo)"
+    },
+    {
+      "status": "pending",
+      "task": "Define Proto for OS interfaces (Connect gRPC frontend access)"
+    }
+  ],
+  "rdfUnifiedDocuments": {
+    "@type": "Dataset",
+    "name": "Unified top-level RDF/JSON-LD documents",
+    "description": "Consolidated from project top-level *.jsonld files except PROJECT.jsonld.",
+    "documents": [
+      {
+        "fileName": "capabilities.jsonld",
+        "content": {
+          "@context": "https://schema.org",
+          "@type": "DefinedTermSet",
+          "@id": "https://os.etzhayyim.com/capabilities",
+          "name": "Etzhayyim OS Capabilities (DoDAF CV-1)",
+          "description": "Capability definitions for Etzhayyim OS — Web4 Local Interface",
+          "hasDefinedTerm": [
+            {
+              "@type": "DefinedTerm",
+              "@id": "cap:agent-runtime",
+              "name": "Agent Runtime Environment",
+              "description": "Local AI agent execution in WASM sandbox with resource limits, lifecycle management (spawn/stop/pause/resume), and local-cloud migration",
+              "inDefinedTermSet": "https://os.etzhayyim.com/capabilities",
+              "termCode": "CAP-OS-001"
+            },
+            {
+              "@type": "DefinedTerm",
+              "@id": "cap:consent-gateway",
+              "name": "Human Consent Gateway",
+              "description": "Human-in-the-loop approval system for dangerous agent actions, with standing delegation support and TTL-based expiry",
+              "inDefinedTermSet": "https://os.etzhayyim.com/capabilities",
+              "termCode": "CAP-OS-002"
+            },
+            {
+              "@type": "DefinedTerm",
+              "@id": "cap:agent-directory",
+              "name": "Agent Directory & Trust Graph",
+              "description": "Agent discovery across local/cloud/remote sources with compatible agent cards and user-managed trust levels",
+              "inDefinedTermSet": "https://os.etzhayyim.com/capabilities",
+              "termCode": "CAP-OS-003"
+            },
+            {
+              "@type": "DefinedTerm",
+              "@id": "cap:resource-budget",
+              "name": "Resource Budget Management",
+              "description": "GCC token and compute resource budget enforcement per agent with pre-action checks, alerts, and emergency freeze",
+              "inDefinedTermSet": "https://os.etzhayyim.com/capabilities",
+              "termCode": "CAP-OS-004"
+            },
+            {
+              "@type": "DefinedTerm",
+              "@id": "cap:audit-trail",
+              "name": "Audit Trail",
+              "description": "Immutable audit log for all agent actions (tool calls, transactions, communications, governance decisions) with searchable history",
+              "inDefinedTermSet": "https://os.etzhayyim.com/capabilities",
+              "termCode": "CAP-OS-005"
+            },
+            {
+              "@type": "DefinedTerm",
+              "@id": "cap:local-cloud-sync",
+              "name": "Local-Cloud State Sync",
+              "description": "Bidirectional agent state synchronization between local Tauri and cloud SpinApp with offline queue and conflict resolution",
+              "inDefinedTermSet": "https://os.etzhayyim.com/capabilities",
+              "termCode": "CAP-OS-006"
+            },
+            {
+              "@type": "DefinedTerm",
+              "@id": "cap:inference-mesh",
+              "name": "Distributed Inference Mesh Node",
+              "description": "Local GPU participation in Petals-style distributed inference mesh with GCC credit rewards",
+              "inDefinedTermSet": "https://os.etzhayyim.com/capabilities",
+              "termCode": "CAP-OS-007"
+            },
+            {
+              "@type": "DefinedTerm",
+              "@id": "cap:drive-sync",
+              "name": "Drive File Synchronization",
+              "description": "Bidirectional file synchronization between local filesystem and cloud storage with project-hub git integration",
+              "inDefinedTermSet": "https://os.etzhayyim.com/capabilities",
+              "termCode": "CAP-OS-008"
+            }
+          ],
+          "activity": [
+            {
+              "@type": "Action",
+              "name": "Spawn Local Agent",
+              "description": "Create and start a new AI agent in WASM sandbox with resource limits and GCC funding",
+              "instrument": "cap:agent-runtime",
+              "performer": "os-runtime-component"
+            },
+            {
+              "@type": "Action",
+              "name": "Migrate Agent",
+              "description": "Transfer agent state between local and cloud environments via sql graph gRPC message stream",
+              "instrument": "cap:agent-runtime",
+              "performer": "os-runtime-component"
+            },
+            {
+              "@type": "Action",
+              "name": "Request Human Approval",
+              "description": "Queue dangerous agent actions for human review with TTL-based expiry",
+              "instrument": "cap:consent-gateway",
+              "performer": "os-runtime-component"
+            },
+            {
+              "@type": "Action",
+              "name": "Discover Agents",
+              "description": "Search for agents across local, cloud, and remote cross-actor networks",
+              "instrument": "cap:agent-directory",
+              "performer": "os-runtime-component"
+            },
+            {
+              "@type": "Action",
+              "name": "Enforce Budget",
+              "description": "Pre-action GCC and compute budget check before agent tool execution",
+              "instrument": "cap:resource-budget",
+              "performer": "os-runtime-component"
+            },
+            {
+              "@type": "Action",
+              "name": "Log Agent Action",
+              "description": "Record agent tool calls, transactions, and governance decisions to immutable audit log",
+              "instrument": "cap:audit-trail",
+              "performer": "os-runtime-component"
+            },
+            {
+              "@type": "Action",
+              "name": "Sync Agent State",
+              "description": "Push/pull agent state between local and cloud with conflict detection",
+              "instrument": "cap:local-cloud-sync",
+              "performer": "os-runtime-component"
+            },
+            {
+              "@type": "Action",
+              "name": "Participate in Mesh",
+              "description": "Register local GPU in distributed inference mesh and earn GCC credits",
+              "instrument": "cap:inference-mesh",
+              "performer": "os-runtime-component"
+            },
+            {
+              "@type": "Action",
+              "name": "File Watch & Upload",
+              "description": "Monitor local filesystem changes and upload to cloud storage",
+              "instrument": "cap:drive-sync",
+              "performer": "drive-sync-component"
+            }
+          ]
+        }
+      },
+      {
+        "fileName": "scheduler.jsonld",
+        "content": {
+          "@context": [
+            "https://schema.org/",
+            {
+              "etzhayyim": "https://etzhayyim.com/schemas/",
+              "milestones": "etzhayyim:milestones",
+              "blockers": "etzhayyim:blockers"
+            }
+          ],
+          "@type": "CreativeWork",
+          "name": "etzhayyim-project-os Scheduler",
+          "identifier": "etzhayyim-project-os/scheduler",
+          "description": "Project schedule (milestones) and blockers.",
+          "dateCreated": "2026-02-15T04:25:26+00:00",
+          "milestones": [
+            {
+              "@type": "CreativeWork",
+              "name": "Web4 OS WIT interface design (etzhayyim:os@0.1.0)",
+              "status": "Completed",
+              "dueDate": "2026-02-24"
+            },
+            {
+              "@type": "CreativeWork",
+              "name": "Implement os-runtime-component (TinyGo SpinApp)",
+              "status": "Planned",
+              "dueDate": "2026-03-15"
+            },
+            {
+              "@type": "CreativeWork",
+              "name": "Consent UI + Agent Dashboard in Tauri",
+              "status": "Planned",
+              "dueDate": "2026-03-30"
+            },
+            {
+              "@type": "CreativeWork",
+              "name": "Local-cloud migration + sync via sql graph",
+              "status": "Planned",
+              "dueDate": "2026-04-15"
+            },
+            {
+              "@type": "CreativeWork",
+              "name": "Budget enforcement + audit trail",
+              "status": "Planned",
+              "dueDate": "2026-04-30"
+            }
+          ],
+          "blockers": [],
+          "dateModified": "2026-02-24T00:00:00Z"
+        }
+      }
+    ]
+  }
+}

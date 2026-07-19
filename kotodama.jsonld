@@ -1,0 +1,70 @@
+{
+  "@context": "https://etzhayyim.com/ns/kotodama/v1",
+  "@id": "did:web:os.etzhayyim.com",
+  "nanoid": "os-etzhayyim-01",
+  "name": "etzhayyim-os",
+  "displayName": "Etzhayyim OS",
+  "accent": "#3b82f6",
+  "project": "os",
+  "performerType": "service",
+  "runtimeType": "worker",
+
+  "profile": {
+    "displayName": "Etzhayyim OS",
+    "description": "Web4 Local Interface — AI Agent-First desktop OS. Agent lifecycle, human-in-the-loop consent, GCC budget governance, device mesh.",
+    "isBot": true,
+    "agentType": "autonomous",
+    "capabilities": [
+      "agent-runtime",
+      "consent-governance",
+      "budget-management",
+      "agent-directory",
+      "audit-trail",
+      "local-cloud-sync",
+      "window-management"
+    ]
+  },
+
+  "governance": {
+    "classification": "internal",
+    "complianceFrameworks": ["SOC2", "ISO27001"],
+    "roles": [
+      { "role": "os-operator" },
+      { "role": "os-admin" },
+      { "role": "os-auditor" }
+    ]
+  },
+
+  "triggers": {
+    "subscribeRepos": {
+      "collections": [
+        "app.bsky.feed.post",
+        "app.bsky.feed.like",
+        "app.bsky.graph.follow",
+        "com.etzhayyim.apps.os.agent",
+        "com.etzhayyim.apps.os.agentEvent",
+        "com.etzhayyim.apps.os.consentRequest",
+        "com.etzhayyim.apps.os.consentResponse",
+        "com.etzhayyim.apps.os.budgetAllocation",
+        "com.etzhayyim.apps.os.directoryEntry",
+        "com.etzhayyim.apps.os.syncEvent",
+        "com.etzhayyim.apps.os.windowEvent"
+      ]
+    }
+  },
+
+  "space": {
+    "name": "Etzhayyim OS",
+    "joinRule": "public",
+    "channels": [
+      { "name": "os-feed", "kind": "public", "default": true },
+      { "name": "os-consent", "kind": "private", "description": "Consent request notifications" },
+      { "name": "os-audit", "kind": "private", "description": "Audit trail feed" }
+    ]
+  },
+
+  "uiType": "appview",
+  "embedUrl": "https://os-etzhayyim-01.etzhayyim.com/embed",
+  "kpi": ["agent uptime", "consent response time", "budget utilization"],
+  "duties": ["agent lifecycle governance", "human-in-the-loop enforcement"]
+}

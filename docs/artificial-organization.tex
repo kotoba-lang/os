@@ -1,0 +1,426 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{enumitem}
+\usepackage[margin=1in]{geometry}
+
+\newtheorem{definition}{Definition}
+\newtheorem{proposition}{Proposition}
+\newtheorem{theorem}{Theorem}
+
+\title{Artificial Organization: \\ A Unix OS and Ethereum-Grounded Architecture \\ for Autonomous Multi-Agent Coordination}
+
+\author{
+  Etzhayyim Research \\
+  \texttt{research@etzhayyim.ai}
+}
+
+\date{February 2026}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+We introduce the concept of \emph{Artificial Organization} (AO), a computational
+framework for structuring autonomous AI agent collectives that mirrors the
+layered architecture of Unix operating systems and the decentralized governance
+mechanisms of Ethereum. An Artificial Organization is neither a single agent nor
+a mere collection of agents; it is a \emph{persistent, self-governing entity}
+with defined capabilities, resources, and decision-making protocols. We ground
+AO's design in two foundational pillars: (1) the Unix OS model, providing
+process isolation, inter-process communication, a hierarchical filesystem
+namespace, and capability-based resource management; and (2) the Ethereum
+model, providing trustless state consensus, programmable governance via smart
+contracts, and tokenized resource accounting. We describe the AO reference
+architecture as implemented in the Etzhayyim platform, demonstrate how Unix
+abstractions map to agent lifecycle management and how Ethereum mechanisms map
+to organizational governance, and discuss implications for scalable, auditable
+AI-native organizations.
+\end{abstract}
+
+\section{Introduction}
+
+Large-scale deployment of AI agents raises a structural question that existing
+frameworks leave unanswered: \emph{How should multiple autonomous agents be
+organized?} Current approaches either treat agents as isolated tools invoked by
+humans, or compose them into rigid pipelines. Neither captures the requirements
+of persistent, evolving collectives of agents that must coordinate, share
+resources, and make collective decisions over extended time horizons.
+
+We propose \textbf{Artificial Organization} (AO) as the unit of collective AI
+agency. An AO is to a group of AI agents what an operating system is to a
+collection of processes, and what a decentralized autonomous organization (DAO)
+is to a group of human participants. The key insight is that two mature
+architectural traditions---Unix and Ethereum---already solve the core problems
+of multi-agent coordination at different layers of abstraction:
+
+\begin{itemize}[nosep]
+  \item \textbf{Unix OS}: Process lifecycle, isolation, IPC, filesystem
+    namespace, capability-based permissions, and the ``everything is a file''
+    abstraction.
+  \item \textbf{Ethereum}: Global state machine, deterministic execution,
+    programmable governance (smart contracts), tokenized resources, and
+    trustless consensus.
+\end{itemize}
+
+By composing these two pillars, AO provides a complete stack: Unix-derived
+mechanisms handle the \emph{operational layer} (running agents, routing
+messages, managing resources), while Ethereum-derived mechanisms handle the
+\emph{governance layer} (collective decisions, resource allocation policies,
+accountability, and incentive alignment).
+
+\section{Background and Related Work}
+
+\subsection{Multi-Agent Systems}
+
+Multi-agent systems (MAS) research has explored coordination mechanisms since
+the 1980s \cite{wooldridge2009}. Contract nets, blackboard architectures, and
+BDI (Belief-Desire-Intention) models provide foundational abstractions.
+However, most MAS frameworks assume agents operate within a predefined protocol
+and lack mechanisms for \emph{organizational evolution}---the ability for the
+collective to modify its own structure and rules.
+
+\subsection{AI Agent Frameworks}
+
+Recent frameworks such as AutoGPT, CrewAI, LangGraph, and OpenAI Swarm focus
+on composing LLM-based agents into task pipelines. These treat organization as
+a static DAG rather than a living entity. They lack persistence, governance,
+and resource accounting---properties essential for production deployment.
+
+\subsection{Operating Systems as Organizational Models}
+
+The Unix philosophy---small programs, clear interfaces, composition via
+pipes---has governed computing for five decades. The process model (fork, exec,
+wait, signal), the filesystem namespace, and capability-based permissions form
+a proven framework for managing concurrent, isolated computational units. We
+argue these abstractions transfer directly to AI agent management.
+
+\subsection{Ethereum and Decentralized Governance}
+
+Ethereum introduced programmable governance through smart contracts and enabled
+DAOs---organizations whose rules are encoded as on-chain programs. Key
+properties include: deterministic state transitions, transparent audit trails,
+token-based resource accounting, and governance by code rather than
+hierarchy. We adopt these properties for the AO governance layer.
+
+\section{Artificial Organization: Definition}
+
+\begin{definition}[Artificial Organization]
+An \emph{Artificial Organization} (AO) is a tuple
+$\mathcal{O} = (A, C, R, S, G, \Pi)$ where:
+\begin{itemize}[nosep]
+  \item $A = \{a_1, \ldots, a_n\}$ is a set of \emph{agent processes} (performers),
+  \item $C = \{c_1, \ldots, c_m\}$ is a set of \emph{capabilities} the organization can perform,
+  \item $R$ is a \emph{resource pool} (compute, memory, API credits, tokens),
+  \item $S$ is the \emph{organizational state} (a persistent, versioned state machine),
+  \item $G$ is the \emph{governance contract} (a set of executable rules for collective decisions),
+  \item $\Pi$ is the \emph{communication protocol} (message passing, pub/sub, RPC).
+\end{itemize}
+\end{definition}
+
+An AO is \emph{persistent}: it survives individual agent restarts. It is
+\emph{self-governing}: governance rules $G$ determine how agents are
+admitted, promoted, suspended, or terminated. It is \emph{accountable}: all
+state transitions in $S$ are recorded and auditable.
+
+\section{Pillar 1: Unix OS as Operational Foundation}
+
+The Unix operating system provides the operational substrate for AO. Each Unix
+abstraction maps to an AO concern:
+
+\subsection{Process Model $\rightarrow$ Agent Lifecycle}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Unix Concept} & \textbf{AO Equivalent} & \textbf{Implementation} \\
+\midrule
+Process & Agent (Performer) & App runtime process with unique app-id \\
+fork() & Agent replication & KEDA scale-out (0$\rightarrow$N) \\
+exec() & Capability assignment & App service invocation \\
+wait() & Task completion & Pub/sub acknowledgment \\
+signal (SIGTERM) & Graceful shutdown & KEDA scale-to-zero \\
+PID & Agent identity & App runtime process-id \\
+Process group & Project & Project directory namespace \\
+\bottomrule
+\end{tabular}
+\caption{Unix process model mapped to AO agent lifecycle.}
+\end{table}
+
+In our implementation, each agent is a App runtime processlication with a unique
+\texttt{app-id}. KEDA manages the scale-to-zero lifecycle: agents are
+``forked'' (scaled from 0 to N) when events arrive on NATS JetStream, and
+``terminated'' (scaled to 0) after a cooldown period. This mirrors the Unix
+process model where the kernel creates and reaps processes based on demand.
+
+\subsection{Filesystem $\rightarrow$ Organizational Namespace}
+
+Unix's hierarchical filesystem provides a universal namespace. In AO, the
+\emph{project structure} serves the same role:
+
+\begin{verbatim}
+/org/etzhayyim/                              # Organization root
+  projects/etzhayyim-project-scheduler/       # Project (process group)
+    app/                                    # Agent code
+    capabilities.jsonld                     # Capability manifest
+    PROJECT.jsonld                          # Process metadata
+  projects/etzhayyim-project-os/             # Another project
+    ui/                                     # Static interface
+    sys-os/                                 # Desktop agent
+      performers/                           # Sub-agents
+      services/                             # Microservices
+\end{verbatim}
+
+This mirrors Unix's \texttt{/proc} filesystem where each process exposes its
+state through a hierarchical namespace. The ``everything is a file''
+philosophy becomes ``everything is a project with colocated metadata.''
+
+\subsection{IPC $\rightarrow$ Agent Communication}
+
+Unix provides pipes, signals, shared memory, and sockets. AO maps these to:
+
+\begin{table}[h]
+\centering
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{Unix IPC} & \textbf{AO Communication} \\
+\midrule
+Pipe & legacy runtime pub/sub (NATS JetStream) \\
+Signal & App service invocation (gRPC) \\
+Shared memory & App state store (PostgreSQL) \\
+Socket & MCP (gRPC-web / Connect-Web) \\
+Named pipe (FIFO) & NATS JetStream consumer \\
+\bottomrule
+\end{tabular}
+\caption{Unix IPC mapped to AO communication primitives.}
+\end{table}
+
+\subsection{Capabilities $\rightarrow$ Permissions}
+
+Unix capabilities (CAP\_NET\_ADMIN, CAP\_SYS\_PTRACE, etc.) control what a
+process may do. In AO, capabilities are declared in \texttt{capabilities.jsonld}
+using DoDAF CV-2 vocabulary and enforced via service mesh mTLS and API access policies.
+An agent can only invoke services for which it holds the appropriate capability
+token.
+
+\section{Pillar 2: Ethereum as Governance Foundation}
+
+While Unix handles the operational layer, Ethereum-derived mechanisms handle
+organizational governance:
+
+\subsection{State Machine $\rightarrow$ Organizational State}
+
+Ethereum is a deterministic state machine where transactions produce
+state transitions. AO adopts this model:
+
+\begin{itemize}[nosep]
+  \item \textbf{Organizational state} ($S$) is stored in a versioned state
+    store (PostgreSQL via legacy runtime) with full transition history.
+  \item Each agent action that modifies organizational state is recorded as a
+    \emph{transaction} with sender, receiver, payload, and timestamp.
+  \item State transitions are deterministic: given the same sequence of
+    transactions, any replica produces the same state.
+\end{itemize}
+
+\subsection{Smart Contracts $\rightarrow$ Governance Contracts}
+
+Ethereum smart contracts encode organizational rules as executable code. AO
+governance contracts define:
+
+\begin{itemize}[nosep]
+  \item \textbf{Admission}: Under what conditions may a new agent join the
+    organization? (e.g., capability requirements, resource deposits)
+  \item \textbf{Resource allocation}: How are compute credits (GCC---Etzhayyim
+    Computing Credits) distributed among agents?
+  \item \textbf{Decision making}: How are collective decisions reached?
+    (Weighted voting, delegation, time-locked proposals)
+  \item \textbf{Accountability}: What happens when an agent exceeds its
+    resource budget or violates a policy?
+\end{itemize}
+
+In our implementation, governance rules are encoded as JSON-LD strategy
+documents (\texttt{STRATEGY.jsonld}) that are machine-readable and can be
+evaluated by a governance engine.
+
+\subsection{Tokens $\rightarrow$ Resource Accounting}
+
+Ethereum's ERC-20 token standard provides fungible resource accounting. AO
+uses \emph{Etzhayyim Computing Credits (GCC)} as the internal unit of account:
+
+\begin{itemize}[nosep]
+  \item Each agent action consumes GCC proportional to its compute cost.
+  \item GCC are allocated per-project via governance contracts.
+  \item Resource exhaustion triggers scale-to-zero (analogous to gas exhaustion
+    reverting a transaction).
+  \item The credits system is managed by \texttt{etzhayyim-project-credits}.
+\end{itemize}
+
+\subsection{Consensus $\rightarrow$ Organizational Agreement}
+
+Ethereum's consensus mechanism ensures all nodes agree on state. In AO,
+consensus operates at two levels:
+
+\begin{enumerate}[nosep]
+  \item \textbf{Operational consensus}: NATS JetStream provides exactly-once
+    delivery and consumer acknowledgment, ensuring all agents process the
+    same event stream.
+  \item \textbf{Governance consensus}: Strategy proposals are submitted as
+    pull requests to the monorepo, reviewed by OWNERS, and merged
+    deterministically via GitOps (Pulumi). The git history serves as an
+    immutable audit log analogous to a blockchain.
+\end{enumerate}
+
+\section{Reference Architecture}
+
+The AO reference architecture consists of three tiers, directly
+corresponding to the Etzhayyim platform deployment model:
+
+\begin{table}[h]
+\centering
+\begin{tabular}{@{}llll@{}}
+\toprule
+\textbf{Tier} & \textbf{Unix Analogy} & \textbf{Ethereum Analogy} & \textbf{Implementation} \\
+\midrule
+Tier 1: Always-On & Kernel daemons & Validator nodes & App runtime DaemonSet \\
+Tier 2: Event-Driven & User processes & Contract execution & App runtime + KEDA 0$\rightarrow$N \\
+Tier 3: Static UI & /dev/tty (terminal) & dApp frontend & nginx + KEDA HTTP \\
+\bottomrule
+\end{tabular}
+\caption{AO three-tier architecture with dual-pillar analogies.}
+\end{table}
+
+\subsection{Operational Flow}
+
+\begin{enumerate}[nosep]
+  \item An external event arrives via NATS JetStream (Unix: interrupt).
+  \item The App runtime sidecar (Unix: kernel scheduler) routes the event to
+    the appropriate agent's consumer.
+  \item KEDA (Unix: process scheduler) scales the agent from 0 to N
+    (Unix: fork).
+  \item The agent processes the event, updates state via App state store
+    (Unix: filesystem write), and publishes results via pub/sub
+    (Unix: pipe).
+  \item After the cooldown period with no events, KEDA scales to 0
+    (Unix: process exit).
+  \item All state transitions are recorded with GCC cost accounting
+    (Ethereum: gas metering).
+\end{enumerate}
+
+\section{Case Study: Etzhayyim Scheduler as AO Service}
+
+The Etzhayyim Scheduler (\texttt{scheduler.etzhayyim.com}) exemplifies AO principles:
+
+\begin{itemize}[nosep]
+  \item \textbf{Process identity}: App runtime process-id \texttt{scheduler}, isolated
+    in its own project namespace.
+  \item \textbf{Capabilities}: Thread aggregation, well-being scheduling,
+    auto-pilot---declared in \texttt{capabilities.jsonld}.
+  \item \textbf{IPC}: Receives events via NATS JetStream pub/sub, invokes
+    peer services via App service invocation.
+  \item \textbf{State}: Persists schedules and user resources in App state
+    store (PostgreSQL).
+  \item \textbf{Governance}: Resource limits defined in
+    \texttt{etzhayyim.json}; scaling policy enforced by KEDA.
+  \item \textbf{Accounting}: Compute costs tracked via GCC.
+  \item \textbf{Fork}: KEDA scales 0$\rightarrow$3 based on NATS consumer lag.
+  \item \textbf{Exit}: Scales to 0 after 120s cooldown.
+\end{itemize}
+
+\section{Discussion}
+
+\subsection{Why Unix?}
+
+Unix has survived for over 50 years because its abstractions are both minimal
+and composable. The process model, filesystem namespace, and IPC primitives
+are sufficient to express arbitrarily complex system behaviors. AO inherits
+this composability: any new agent can be added to the organization by
+creating a project directory, declaring capabilities, and connecting to the
+pub/sub bus---just as a new Unix program can be written, given execute
+permission, and connected to pipes.
+
+\subsection{Why Ethereum?}
+
+Ethereum demonstrates that governance can be \emph{encoded as software}
+rather than delegated to human bureaucracy. For AI organizations that
+operate at machine speed, human-in-the-loop governance becomes a
+bottleneck. Ethereum's model of transparent, deterministic, auditable
+governance-by-code is essential for AO. The specific choice of Ethereum
+(rather than other blockchain architectures) is motivated by:
+
+\begin{enumerate}[nosep]
+  \item The smart contract programming model, which maps directly to
+    governance rules.
+  \item The gas/token mechanism, which provides natural resource accounting.
+  \item The DAO precedent, which validates the concept of code-governed
+    organizations.
+  \item EVM determinism, which ensures governance outcomes are reproducible.
+\end{enumerate}
+
+\subsection{Limitations}
+
+AO inherits limitations from both pillars. From Unix: the single-machine
+assumption must be relaxed for distributed deployment (addressed via
+Kubernetes + legacy runtime). From Ethereum: on-chain governance is slow and
+expensive; AO uses off-chain execution with on-chain-style audit trails
+(git as immutable log) to mitigate this.
+
+\section{Conclusion}
+
+Artificial Organization provides a principled framework for structuring
+autonomous AI agent collectives. By grounding the operational layer in
+Unix OS abstractions and the governance layer in Ethereum mechanisms, AO
+achieves the composability, isolation, and lifecycle management of Unix
+together with the transparent, programmable governance of Ethereum. The
+Etzhayyim platform demonstrates this architecture in production with legacy runtime,
+KEDA, NATS JetStream, and Pulumi GitOps.
+
+The key contribution is recognizing that the ``organization problem'' for
+AI agents is not novel---it is a composition of the process management
+problem (solved by Unix) and the decentralized governance problem (solved
+by Ethereum). AO is the synthesis.
+
+\begin{thebibliography}{9}
+
+\bibitem{wooldridge2009}
+M.~Wooldridge, \emph{An Introduction to MultiAgent Systems}, 2nd ed.,
+Wiley, 2009.
+
+\bibitem{ritchie1974}
+D.~M.~Ritchie and K.~Thompson, ``The UNIX Time-Sharing System,''
+\emph{Communications of the ACM}, vol.~17, no.~7, pp.~365--375, 1974.
+
+\bibitem{buterin2014}
+V.~Buterin, ``A Next-Generation Smart Contract and Decentralized
+Application Platform,'' Ethereum Whitepaper, 2014.
+
+\bibitem{dapr2024}
+legacy runtime Authors, ``legacy runtime: Distributed Application Runtime,''
+\url{https://legacy-runtime.io}, 2024.
+
+\bibitem{keda2024}
+KEDA Authors, ``KEDA: Kubernetes Event-Driven Autoscaling,''
+\url{https://keda.sh}, 2024.
+
+\bibitem{raymond2003}
+E.~S.~Raymond, \emph{The Art of Unix Programming}, Addison-Wesley, 2003.
+
+\bibitem{szabo1997}
+N.~Szabo, ``The Idea of Smart Contracts,'' 1997.
+
+\bibitem{jennings2000}
+N.~R.~Jennings, ``On Agent-Based Software Engineering,''
+\emph{Artificial Intelligence}, vol.~117, no.~2, pp.~277--296, 2000.
+
+\bibitem{singh2005}
+M.~P.~Singh and M.~N.~Huhns, \emph{Service-Oriented Computing:
+Semantics, Processes, Agents}, Wiley, 2005.
+
+\end{thebibliography}
+
+\end{document}
