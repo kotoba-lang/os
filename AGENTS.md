@@ -52,7 +52,7 @@ KAMI Engine (wgpu compositor) + Kotodama host-sdk (TS Native) の 2 層で構成
 
 ```
 60-apps/etzhayyim-project-os/
-├── CLAUDE.md                  # This file
+├── AGENTS.md                  # This file
 ├── kotodama.jsonld            # Kotodama app definition (did:web:os.etzhayyim.com)
 ├── PROJECT.jsonld             # Metadata
 ├── OWNERS
@@ -136,11 +136,11 @@ All labels include RLS columns: `org_id`, `user_id`, `actor_id`, `created_at`.
 
 ## Nested References
 
-- KAMI Engine: `40-engine/kami-engine/CLAUDE.md`
-- Kotodama SDK: `40-engine/kotoba/crates/kotoba-kotodama/CLAUDE.md`
+- KAMI Engine: `40-engine/kami-engine/AGENTS.md`
+- Kotodama SDK: `40-engine/kotoba/crates/kotoba-kotodama/AGENTS.md`
 - WIT contracts: `_archive/00-contracts/wit/` (archived 2026-04-12)
 - Automaton WIT: `provider/automaton/wit/automaton.wit`
-- Projects rules: `60-apps/CLAUDE.md`
+- Projects rules: `60-apps/AGENTS.md`
 
 ## Build & Deploy
 
